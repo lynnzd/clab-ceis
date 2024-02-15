@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.12"
 dash = "^2.15.0"
 pandas = "^2.2.0"
+dash-cytoscape = "^1.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
