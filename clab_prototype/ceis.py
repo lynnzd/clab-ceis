@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+
+
 from enum import Enum
 
-from dash import Dash, Input, Output, dcc, html, dash_table
+from dash import Dash, Input, Output, html, dash_table
 import dash_cytoscape as cyto
 
 import ceis_data
@@ -43,7 +46,7 @@ flow_chart_data = {
     ]
 }
 
-
+#!/usr/bin/env python
 app.layout = html.Div(
     children=[
         html.Header([
@@ -194,4 +197,4 @@ def onTapNode(tapNodeData):
     return filtered_data.to_dict("records")
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(host="0.0.0.0", debug=True)
