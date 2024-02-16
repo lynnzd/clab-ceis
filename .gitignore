@@ -1,5 +1,8 @@
 *
 !.gitignore
+!Dockerfile
+!docker-compose.yaml
+!.dockerignore
 
 !clab_prototype/
 

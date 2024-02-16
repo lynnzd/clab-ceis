@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  shop:
+    build:
+      context: .
+    ports:
+      - "8050:8050"
+    entrypoint: ["poetry", "run", "./clab_prototype/shop.py"]
+
+  ceis:
+    build:
+      context: .
+    ports:
+      - "8051:8051"
+    entrypoint: ["poetry", "run", "./clab_prototype/ceis.py"]
