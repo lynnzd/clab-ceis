@@ -8,3 +8,7 @@ clab_prototype/__pycache__
 
 !clab_prototype/assets
 !clab_prototype/assets/*
+
+!doc
+!doc/assets
+!doc/assets/*
