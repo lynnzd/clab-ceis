@@ -61,13 +61,13 @@ app.layout = html.Div(
         ]),
         html.Div([
             html.H1("Product Lifecycle"),
-            html.Div([
-                html.Img(
-                    src=app.get_asset_url("lifecycle.png"),
-                    alt="Product Lifecycle Placeholder",
-                    style={"max-width": "100%", "height": "auto"}
-                )
-            ], className="product-lifecycle"),
+            # html.Div([
+            #     html.Img(
+            #         src=app.get_asset_url("lifecycle.png"),
+            #         alt="Product Lifecycle Placeholder",
+            #         style={"max-width": "100%", "height": "auto"}
+            #     )
+            # ], className="product-lifecycle"),
             cyto.Cytoscape(
                 id="flow-chart",
                 layout={"name": "preset"},
