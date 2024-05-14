@@ -202,5 +202,5 @@ if __name__ == "__main__":
     )
     mon = CeisMonitor(app)
     # TODO: implement a good way to change the configuration
-    app.run_server(host="ceis", port="8051", debug=True)
-    # app.run_server(host="localhost", port="8051", debug=True)
+    # app.run_server(host="ceis", port="8051", debug=True)
+    app.run_server(host="localhost", port="8051", debug=True)

@@ -17,7 +17,8 @@ class CeisData():
         self._data = data
 
     def _read_data(self):
-        csv_path = Path("clab_prototype/resevents.csv")
+        # TODO: make this configurable
+        csv_path = Path("ceis/resevents.csv")
         if csv_path.exists():
             return pd.read_csv(csv_path).sort_values(by="Timestamp")
         else:

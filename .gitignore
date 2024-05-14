@@ -4,13 +4,13 @@
 !docker-compose.yaml
 !.dockerignore
 
-!clab_prototype/
+!clab_ceis/
 
-!clab_prototype/*
-clab_prototype/__pycache__
+!clab_ceis/*
+clab_ceis/__pycache__
 
-!clab_prototype/assets
-!clab_prototype/assets/*
+!clab_ceis/assets
+!clab_ceis/assets/*
 
 !doc
 !doc/assets
