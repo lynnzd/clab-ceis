@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from dash import Dash, dcc, html
 
-import shop_callbacks
+from clab_ceis import shop_callbacks
 
 
 class CeisShop():

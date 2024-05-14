@@ -7,7 +7,7 @@ import dash_cytoscape as cyto
 from flask import request, jsonify
 import pandas as pd
 
-import ceis_data
+from clab_ceis import ceis_data
 
 
 class CeStages(Enum):

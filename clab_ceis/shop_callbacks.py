@@ -7,7 +7,7 @@ from dash.dependencies import (
     State
 )
 
-from ceis_data import CeisTrade
+from clab_ceis  import ceis_data as cd
 
 def get_callbacks(app):
 
@@ -21,7 +21,7 @@ def get_callbacks(app):
         # quote_url = "http://ceis:8051/quote"
         quote_url = "http://localhost:8051/quote"
         headers = {"Content-Type": "application/json"}
-        product_quote = copy.deepcopy(CeisTrade.get_quote())
+        product_quote = copy.deepcopy(cd.CeisTrade.get_quote())
         product_quote["CIType"] = value
         if n_clicks > 0:
             response = httpx.put(quote_url, json=product_quote, headers=headers).json()
