@@ -61,6 +61,3 @@ def get_callbacks(app: Dash, data: ceis_data.CeisData) -> None:
     )
     def update_table(n_clicks):
         return data.get_data().to_dict('records')
-
-# if __name__ == "__main__":
-#     app.run_server(host="ceis", port="8051", debug=True)
