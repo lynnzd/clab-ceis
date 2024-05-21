@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-
 from enum import Enum
 
-from dash import Dash, Input, Output, State, html, dash_table, dcc
+from dash import Dash, html, dash_table
 import dash_cytoscape as cyto
 from flask import request, jsonify
 import pandas as pd
@@ -24,15 +23,11 @@ class CeLoops(Enum):
     Composting = 14
 
 
-CHART_HEIGHT=400
-
-# ce_data = ceis_data.CeisData()
-# self._data.data = ce_data.data
-
 class CeisMonitor():
     _model: pd.DataFrame = None
     _app: Dash = None
     _layout = None
+    _chart_height = 400
 
     @property
     def layout(self):
@@ -49,10 +44,10 @@ class CeisMonitor():
         # Sample flow chart data
         flow_chart_data = {
             "elements": [
-                {"data": {"id": f"{CeStages.Extraction.value}", "label": f"{CeStages.Extraction.name}"}, "position": {"x": 100, "y": 0.5 * CHART_HEIGHT}},
-                {"data": {"id": f"{CeStages.Production.value}", "label": f"{CeStages.Production.name}"}, "position": {"x": 300, "y": 0.5 * CHART_HEIGHT}},
-                {"data": {"id": f"{CeStages.Use.value}", "label": f"{CeStages.Use.name}"}, "position": {"x": 500, "y": 0.5 * CHART_HEIGHT}},
-                {"data": {"id": f"{CeStages.Waste.value}", "label": f"{CeStages.Waste.name}"}, "position": {"x": 700, "y": 0.5 * CHART_HEIGHT}},
+                {"data": {"id": f"{CeStages.Extraction.value}", "label": f"{CeStages.Extraction.name}"}, "position": {"x": 100, "y": 0.5 * self.chart_height}},
+                {"data": {"id": f"{CeStages.Production.value}", "label": f"{CeStages.Production.name}"}, "position": {"x": 300, "y": 0.5 * self.chart_height}},
+                {"data": {"id": f"{CeStages.Use.value}", "label": f"{CeStages.Use.name}"}, "position": {"x": 500, "y": 0.5 * self.chart_height}},
+                {"data": {"id": f"{CeStages.Waste.value}", "label": f"{CeStages.Waste.name}"}, "position": {"x": 700, "y": 0.5 * self.chart_height}},
                 {"data": {"source": f"{CeStages.Extraction.value}", "target": f"{CeStages.Production.value}", "label": "Supply"}},
                 {"data": {"source": f"{CeStages.Production.value}", "target": f"{CeStages.Use.value}", "label": "Deliver"}},
                 {"data": {"source": f"{CeStages.Use.value}", "target": f"{CeStages.Waste.value}", "label": "Release"}},
@@ -71,17 +66,10 @@ class CeisMonitor():
                 ]),
                 html.Div([
                     html.H1("Product Lifecycle"),
-                    # html.Div([
-                    #     html.Img(
-                    #         src=app.get_asset_url("lifecycle.png"),
-                    #         alt="Product Lifecycle Placeholder",
-                    #         style={"max-width": "100%", "height": "auto"}
-                    #     )
-                    # ], className="product-lifecycle"),
                     cyto.Cytoscape(
                         id="flow-chart",
                         layout={"name": "preset"},
-                        style={"height": f"{CHART_HEIGHT}px"},
+                        style={"height": f"{self.chart_height}px"},
                         autolock=True,
                         elements=flow_chart_data["elements"],
                         panningEnabled=False,
@@ -92,8 +80,8 @@ class CeisMonitor():
                                 "style": {
                                     "label": "data(label)",
                                     "shape": "tag",
-                                    # "width": f"{0.3 * CHART_HEIGHT}",
-                                    # "height": f"{0.15 * CHART_HEIGHT}",
+                                    # "width": f"{0.3 * self.chart_height}",
+                                    # "height": f"{0.15 * self.chart_height}",
                                     "text-halign": "left",
                                     "text-valign": "bottom",
                                     "text-margin-x": "-10%",
@@ -154,7 +142,7 @@ class CeisMonitor():
                         id="res-dashboard-table",
                         columns=[{"name": col, "id": col} for col in self._model.get_data().columns],
                         data=self._model.get_data().to_dict("records"),
-                        style_table={"maxWidth": f"{CHART_HEIGHT}px"},
+                        style_table={"maxWidth": f"{self.chart_height}px"},
                         style_cell={"textAlign": "center"},
                         style_header={"fontWeight": "bold"},
                     ),
