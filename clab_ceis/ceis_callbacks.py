@@ -1,31 +1,8 @@
 #!/usr/bin/env python
-
-from enum import Enum
-
-from dash import Dash, Input, Output, State, html, dash_table, dcc
-import dash_cytoscape as cyto
-from flask import request, jsonify
-import pandas as pd
+from dash import Dash, Input, Output
 
 from clab_ceis import ceis_data
 
-
-class CeStages(Enum):
-    Extraction = 1
-    Production = 2
-    Use = 3
-    Waste = 4
-
-
-class CeLoops(Enum):
-    Repair = 11
-    Remanufacture = 12
-    Recycle = 13
-    Composting = 14
-
-
-CHART_HEIGHT=400
-# ce_data = ceis_data.data
 
 def get_callbacks(app: Dash, data: ceis_data.CeisData) -> None:
 
