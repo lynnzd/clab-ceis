@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 from enum import Enum
 
+import pandas as pd
 from dash import Dash, html, dash_table
 import dash_cytoscape as cyto
 from flask import request, jsonify
-import pandas as pd
 
-from clab_ceis import ceis_data, ceis_callbacks
+from clab_ceis import ceis_data, ceis_callbacks, config
 
 
 class CeStages(Enum):
@@ -190,4 +190,8 @@ if __name__ == "__main__":
     mon = CeisMonitor(app)
     # TODO: implement a good way to change the configuration
     # app.run_server(host="ceis", port="8051", debug=True)
-    app.run_server(host="localhost", port="8051", debug=True)
+    app.run_server(
+        host=config.CEIS_MONITOR_HOSTNAME,
+        port=config.CEIS_MONITOR_PORT,
+        debug=True
+    )

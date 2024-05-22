@@ -8,6 +8,7 @@ from dash.dependencies import (
 )
 
 from clab_ceis  import ceis_data as cd
+from clab_ceis import config
 
 def get_callbacks(app):
 
@@ -18,8 +19,7 @@ def get_callbacks(app):
         prevent_initial_call=True
     )
     def display_quote(n_clicks, value):
-        # quote_url = "http://ceis:8051/quote"
-        quote_url = "http://localhost:8051/quote"
+        quote_url = f"http://{config.CEIS_MONITOR_HOSTNAME}:{config.CEIS_MONITOR_PORT}/quote"
         headers = {"Content-Type": "application/json"}
         product_quote = copy.deepcopy(cd.CeisTrade.get_quote())
         product_quote["CIType"] = value

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from dash import Dash, dcc, html
 
-from clab_ceis import shop_callbacks
+from clab_ceis import shop_callbacks, config
 
 
 class CeisShop():
@@ -14,9 +14,7 @@ class CeisShop():
     
     def __init__(self, app) -> None:
         self._app = app
-        # self._model = ceis_data.CeisData()
         self.make_layout()
-        # self.get_route(self._app.server)
         shop_callbacks.get_callbacks(self._app)
 
     def make_layout(self):
@@ -53,8 +51,6 @@ class CeisShop():
                                 value="dress",
                                 style={"flex": "1"},
                             ),
-                            # html.Br(),
-                            # html.Br(),
                             html.Button("Get Quote", id="btn-get-quote", n_clicks=0),
                             html.Div(id="quote-result", className="quote-result", style={"font-size": "18px", "margin-top": "20px", "color": "#333"}),
                         ]
@@ -69,5 +65,8 @@ if __name__ == "__main__":
     app = Dash(__name__)
     shop = CeisShop(app)
 
-    app.run_server(host="localhost", debug=True)
-    # app.run_server(host="shop", debug=True)
+    app.run_server(
+        host=config.CEIS_SHOP_HOSTNAME,
+        port=config.CEIS_SHOP_PORT,
+        debug=True
+    )
