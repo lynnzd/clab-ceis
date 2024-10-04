@@ -1,16 +1,36 @@
-version: '3'
-
 services:
   shop:
     build:
       context: .
     ports:
       - "8050:8050"
-    entrypoint: ["poetry", "run", "./clab_prototype/shop.py"]
+    # Masks sourcode in container so changes are synced to host
+    volumes:
+      - ./:/app/
+    network_mode: host
+    entrypoint: ["poetry", "run", "./clab_ceis/shop.py"]
 
   ceis:
     build:
       context: .
     ports:
       - "8051:8051"
-    entrypoint: ["poetry", "run", "./clab_prototype/ceis.py"]
+    volumes:
+      - ./:/app/
+    network_mode: host
+    entrypoint: ["poetry", "run", "./clab_ceis/ceis.py"]
+
+  graphdb:
+    hostname: graphdb
+    build:
+      context: clab_ceis/assets/graphdb
+    ports: 
+    - 7200:7200
+    - 7300:7300
+    # Masks sourcode in container so changes are synced to host
+    volumes:
+      - ceis-graphdb-volume:/opt/graphdb/home
+    network_mode: host
+
+volumes:
+  ceis-graphdb-volume:
