@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "clab-ceis"
+name = "clab_ceis"
 version = "0.1.0"
 description = ""
 authors = ["Alessandro Giugno <alessandro.giugno@unisg.ch>"]
