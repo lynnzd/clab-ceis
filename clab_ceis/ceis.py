@@ -6,7 +6,7 @@ from dash import Dash, html, dash_table
 import dash_cytoscape as cyto
 from flask import request, jsonify
 
-from clab_ceis import ceis_data, ceis_callbacks, config
+import ceis_data, ceis_callbacks, config
 
 
 class CeStages(Enum):

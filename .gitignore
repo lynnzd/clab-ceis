@@ -11,6 +11,14 @@ clab_ceis/__pycache__
 
 !clab_ceis/assets
 !clab_ceis/assets/*
+!clab_ceis/assets/graphdb
+!clab_ceis/assets/graphdb/*
+!clab_ceis/assets/graphdb/conf
+!clab_ceis/assets/graphdb/conf
+!clab_ceis/assets/graphdb/data/*
+!clab_ceis/assets/graphdb/data/*
+
+
 
 !doc
 !doc/assets
