@@ -1,14 +1,18 @@
 import os
 import requests
+import sys
 
-def run_sparql_query():
-    # Print out the script's directory for debugging purposes
-    script_dir = os.path.dirname(__file__)  # Get the directory of the current script
-    print("Script directory:", script_dir)
+def run_sparql_query(query_file):
+    # Get the directory of the current script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Set the base directory for the query files relative to the script location
+    query_file_path = os.path.join(script_dir, query_file)
 
-    # GraphDB Server and repository settings
-    graphdb_url = "http://localhost:7200/repositories/clab-ceis"
-    query_file_path = os.path.join(script_dir, "garment_query.rq")  # Absolute path to the query file
+    # Check if the query file exists
+    if not os.path.isfile(query_file_path):
+        print(f"Query file '{query_file_path}' not found.")
+        return
 
     # Load the SPARQL query from file
     try:
@@ -17,6 +21,9 @@ def run_sparql_query():
     except FileNotFoundError:
         print(f"Query file '{query_file_path}' not found.")
         return
+
+    # GraphDB Server and repository settings
+    graphdb_url = "http://localhost:7200/repositories/clab-ceis"
 
     # Headers for SPARQL query request
     headers = {
@@ -41,4 +48,13 @@ def run_sparql_query():
 
 # Run the function if the script is executed directly
 if __name__ == "__main__":
-    run_sparql_query()
+    # Check for the query file argument
+    if len(sys.argv) != 2:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        print(f"Navigate to this directory before running: {script_dir}")
+        print("Run in terminal using this command: python run_query.py <query_file.rq>")
+        sys.exit(1)
+
+    # Get the query file from the command line argument
+    query_file = sys.argv[1]
+    run_sparql_query(query_file)
