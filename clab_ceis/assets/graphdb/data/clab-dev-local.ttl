@@ -1,0 +1,211 @@
+@prefix : <http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/> .
+
+<http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16> rdf:type owl:Ontology .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/hasFabricBlock
+:hasFabricBlock rdf:type owl:ObjectProperty ;
+                rdfs:subPropertyOf owl:topObjectProperty ;
+                owl:inverseOf :isFabricBlockOf ;
+                rdfs:domain :Garment ;
+                rdfs:range :FabricBlock .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/hasRecipe
+:hasRecipe rdf:type owl:ObjectProperty ;
+           rdfs:subPropertyOf owl:topObjectProperty ;
+           owl:inverseOf :isRecipeOf ;
+           rdfs:domain :Garment ;
+           rdfs:range :Recipe .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/isFabricBlockOf
+:isFabricBlockOf rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf owl:topObjectProperty ;
+                 rdfs:domain :Garment ;
+                 rdfs:range :FabricBlock .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/isRecipeOf
+:isRecipeOf rdf:type owl:ObjectProperty ;
+            rdfs:subPropertyOf owl:topObjectProperty ;
+            rdfs:domain :Garment ;
+            rdfs:range :Recipe .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/CropTop
+:CropTop rdf:type owl:Class ;
+         rdfs:subClassOf :Top .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/CropTopRecipe
+:CropTopRecipe rdf:type owl:Class ;
+               rdfs:subClassOf :TopRecipe .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/FB14x40cm
+:FB14x40cm rdf:type owl:Class ;
+           rdfs:subClassOf :FabricBlock .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/FB64x80cm
+:FB64x80cm rdf:type owl:Class ;
+           rdfs:subClassOf :FabricBlock .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/FBL100x160cm
+:FBL100x160cm rdf:type owl:Class ;
+              rdfs:subClassOf :FabricBlock .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/FabricBlock
+:FabricBlock rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/Garment
+:Garment rdf:type owl:Class ;
+         rdfs:subClassOf [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasFabricBlock ;
+                           owl:someValuesFrom :FabricBlock
+                         ] ,
+                         [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasRecipe ;
+                           owl:someValuesFrom :Recipe
+                         ] .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/Recipe
+:Recipe rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/Skirt
+:Skirt rdf:type owl:Class ;
+       rdfs:subClassOf :Garment ;
+       owl:disjointWith :Top .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/SkirtRecipe
+:SkirtRecipe rdf:type owl:Class ;
+             rdfs:subClassOf :Recipe ;
+             owl:disjointWith :TopRecipe .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/Sommar
+:Sommar rdf:type owl:Class ;
+        rdfs:subClassOf :Skirt .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/SommarRecipe
+:SommarRecipe rdf:type owl:Class ;
+              rdfs:subClassOf :SkirtRecipe .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/Top
+:Top rdf:type owl:Class ;
+     rdfs:subClassOf :Garment .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/TopRecipe
+:TopRecipe rdf:type owl:Class ;
+           rdfs:subClassOf :Recipe .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/V1
+:V1 rdf:type owl:Class ;
+    rdfs:subClassOf :Sommar .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/V1Recipe
+:V1Recipe rdf:type owl:Class ;
+          rdfs:subClassOf :SommarRecipe .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/V2
+:V2 rdf:type owl:Class ;
+    rdfs:subClassOf :Sommar .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/V2Recipe
+:V2Recipe rdf:type owl:Class ;
+          rdfs:subClassOf :SommarRecipe .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/V3
+:V3 rdf:type owl:Class ;
+    rdfs:subClassOf :Sommar .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16/V3Recipe
+:V3Recipe rdf:type owl:Class ;
+          rdfs:subClassOf :SommarRecipe .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16#croptop1
+:croptop1 rdf:type owl:NamedIndividual ,
+                   :CropTop .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16#sommarSkirt1
+:sommarSkirt1 rdf:type owl:NamedIndividual ,
+                       :V1 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-16#sommarSkirt2
+:sommarSkirt2 rdf:type owl:NamedIndividual ,
+                       :V2 .
+
+
+#################################################################
+#    General axioms
+#################################################################
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :FB14x40cm
+                :FB64x80cm
+                :FBL100x160cm
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :FabricBlock
+                :Garment
+                :Recipe
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :V1
+                :V2
+                :V3
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :V1Recipe
+                :V2Recipe
+                :V3Recipe
+              )
+] .
+
+
+###  Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi
