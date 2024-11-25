@@ -7,8 +7,8 @@ from dash.dependencies import (
     State
 )
 
-from clab_ceis  import ceis_data as cd
-from clab_ceis import config
+import ceis_data as cd
+import config
 
 def get_callbacks(app):
 

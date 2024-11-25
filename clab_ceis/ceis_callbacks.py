@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from dash import Dash, Input, Output
 
-from clab_ceis import ceis_data
+import ceis_data
 
 
 def get_callbacks(app: Dash, data: ceis_data.CeisData) -> None:
