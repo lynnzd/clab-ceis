@@ -3,7 +3,8 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
-SELECT (COUNT(?garment) AS ?availableCropTops)
+SELECT ?recipe
 WHERE {
-  ?garment :madeThroughRecipe :topRecipe1 . 
+  ?design rdf:type/rdfs:subClassOf* :TopDesign .  # Find all instances of TopDesign or subclasses
+  ?recipe :isRecipeOf ?design .                  # Get recipes linked to those instances
 }

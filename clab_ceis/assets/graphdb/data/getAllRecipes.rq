@@ -1,0 +1,7 @@
+PREFIX : <http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-20/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?instance
+WHERE {
+  ?instance rdf:type :Recipe .
+}
