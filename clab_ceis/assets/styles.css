@@ -1,0 +1,273 @@
+/* Wrapper to Center the Page */
+
+.wrapper {
+    margin: 0 auto;
+    max-width: 1024px;
+    padding: 10px;
+}
+
+/* Card for Shadows and Padding */
+.card {
+    margin-bottom: 24px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+/* Header Title */
+.header-title {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    margin: 0;
+}
+
+/* Order Form as Flexbox */
+.order-form {
+    display: flex;
+    justify-content: space-evenly; /* Distributes items with equal space between */
+    align-items: flex-start;      /* Aligns items to the top */
+    gap: 60px;                    /* Adds horizontal spacing */
+    margin-bottom: 20px;          /* Space below the products */
+}
+
+/* Individual Product */
+.product {
+    text-align: center;
+    flex: 1; /* Equal width for all items */
+}
+
+/* Product Images */
+.product-image {
+    width: 200px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    transition: transform 0.3s ease;
+}
+
+/* Zoom Effect on Hover */
+.product-image:hover {
+    transform: scale(1.05);
+}
+
+/* Product Label */
+.product-label {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Dropdown and Button Centered */
+.form-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+
+.quote-button:hover {
+    background-color: #0056b3;
+}
+
+/* Center and Structure the Main Layout */
+.wrapper {
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 1024px;
+    padding-right: 10px;
+    padding-left: 10px;
+    margin-top: 32px;
+}
+
+/* Add Shadow and Padding to Card Components */
+.card {
+    margin-bottom: 24px;
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.18);
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+/* Header Styles */
+.header-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+}
+
+/* Products Section */
+.order-form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.product {
+    text-align: center;
+}
+
+.product-image {
+    width: 200px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+}
+
+.product-label {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Dropdown and Button */
+.form-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.dcc-dropdown {
+    width: 250px;
+    margin: 0 auto;
+}
+
+.quote-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.quote-button:hover {
+    background-color: #0056b3;
+}
+
+
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    color: #555;
+    background-color: #f9f9f9; /* Optional: light background for the footer */
+    position: fixed; /* Fix the footer to the bottom of the viewport */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1); /* Optional: top shadow for the footer */
+}
+/* General Wrapper */
+.wrapper {
+    margin: 0 auto;
+    max-width: 1024px;
+    padding: 20px;
+}
+
+/* Card Style for Sections */
+.card {
+    margin-bottom: 24px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+/* Header Title */
+.header-title {
+    font-size: 28px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Flexbox for Product Content */
+.order-form {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+}
+
+/* Individual Product Card */
+.product {
+    text-align: center;
+    flex: 1;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.product:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+.product-label {
+    display: block;
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Product Detail Page */
+.product-detail {
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 20px;
+}
+
+.product-title {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.product-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.product-description {
+    flex: 1;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.product-image {
+    flex: 1;
+    max-width: 300px;
+}
+
+/* Back Link */
+.back-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 16px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    color: #555;
+    margin-top: 20px;
+}
