@@ -5,6 +5,6 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
 SELECT ?recipe
 WHERE {
-  ?design rdf:type/rdfs:subClassOf* :TopDesign .  # Find all instances of TopDesign or subclasses
+  ?design rdf:type/rdfs:subClassOf* :SkirtDesign .  # Find all instances of TopDesign or subclasses
   ?recipe :isRecipeOf ?design .                  # Get recipes linked to those instances
 }

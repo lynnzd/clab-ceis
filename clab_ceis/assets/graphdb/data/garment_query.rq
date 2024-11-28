@@ -1,9 +1,0 @@
-PREFIX : <http://www.semanticweb.org/sophi/ontologies/2024/9/untitled-ontology-20/>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
-
-SELECT ?garment
-WHERE {
-  ?garment rdf:type/rdfs:subClassOf* :Garment .
-}

@@ -1,0 +1,9 @@
+PREFIX : <http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT (COUNT(?fabricBlock) AS ?availableFB)
+WHERE {
+    ?fabricBlock :usesFabricBlockDesign :FB14x40 .  # Link FabricBlock to FB14x40
+}
+
