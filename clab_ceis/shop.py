@@ -155,6 +155,29 @@ def top_page():
                                 "It combines elegance with comfort, ensuring you stay warm and look great.",
                                 style={"font-size": "18px"},
                             ),
+                             # Button to trigger SPARQL query
+                            html.Button("Fetch Top Data", id="fetch-top-data"),
+                            # DataTable to display SPARQL results
+                            dash_table.DataTable(
+                                id="top-data-table",
+                                columns=[
+                                    {"name": "Recipe", "id": "recipe"}
+                                ],
+                                style_table={
+                                    "overflowX": "auto",
+                                    "width": "100%",
+                                    "margin-top": "20px",
+                                },
+                                style_cell={
+                                    "textAlign": "left",
+                                    "padding": "5px",
+                                },
+                                style_header={
+                                    "backgroundColor": "rgb(230, 230, 230)",
+                                    "fontWeight": "bold",
+                                },
+                                page_size=5,
+                            ),
                         ]
                     ),
                 ],
@@ -268,6 +291,33 @@ def fetch_skirt_recipes():
         print(f"Error querying SPARQL endpoint: {e}")
         return []
 
+def fetch_top_recipes():
+    query = """
+    PREFIX : <http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+    SELECT ?recipe
+    WHERE {
+      ?design rdf:type/rdfs:subClassOf* :TopDesign .
+      ?recipe :isRecipeOf ?design .
+    }
+    """
+    client = SPARQLWrapper(SPARQL_ENDPOINT)
+    client.setQuery(query)
+    client.setReturnFormat(JSON)
+    try:
+        results = client.query().convert()
+        
+        # Extract the last part of the URI for each recipe
+        return [
+            {"recipe": result["recipe"]["value"].split("/")[-1]}  # Extracts only the last part
+            for result in results["results"]["bindings"]
+        ]
+    except Exception as e:
+        print(f"Error querying SPARQL endpoint: {e}")
+        return []
 
 
 # Main Layout with Navigation Menu
@@ -323,6 +373,20 @@ def update_skirt_table(n_clicks):
         print(f"Error fetching SPARQL data: {e}")
         return []
 
+@app.callback(
+    Output("top-data-table", "data"),
+    Input("fetch-top-data", "n_clicks"),
+    prevent_initial_call=True
+)
+
+def update_top_table(n_clicks):
+    try:
+        # Fetch data from GraphDB
+        data = fetch_top_recipes()
+        return data
+    except Exception as e:
+        print(f"Error fetching SPARQL data: {e}")
+        return []
 
 # Data Callbacks for Resource Event Dashboard
 @app.callback(
