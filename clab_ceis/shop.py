@@ -3,6 +3,7 @@ from dash.dependencies import Input, Output
 import ceis_data  # Assuming ceis_data.py is available and correctly implemented
 import plotly.graph_objects as go
 from SPARQLWrapper import SPARQLWrapper, JSON
+import pandas as pd
 
 
 
@@ -217,47 +218,101 @@ def dashboard_page():
                                 },
                                 page_size=5,
                             ),
-                        ]
-                       
+                        ]        
             ),
-            # Circular Economy Dashboard
             html.Div(
                 children=[
-                    html.H2("Circular Economy Dashboard", style={"margin-bottom": "20px"}),
-                    dash_table.DataTable(
-                        id="circular-economy-table",
-                        columns=[
-                            {"name": "Metric", "id": "Metric"},
-                            {"name": "Value", "id": "Value"},
-                        ],
-                        data=[
-                            {"Metric": "Circular Economy Metric 1", "Value": 1234},
-                            {"Metric": "Circular Economy Metric 2", "Value": 5678},
-                            {"Metric": "Circular Economy Metric 3", "Value": 9012},
-                        ],
-                        style_table={
-                            "overflowX": "auto",
-                            "width": "50%",
-                            "margin": "0 auto",
-                        },
-                        style_cell={
-                            "textAlign": "left",
-                            "padding": "5px",
-                        },
-                        style_header={
-                            "backgroundColor": "rgb(230, 230, 230)",
-                            "fontWeight": "bold",
-                        },
-                        page_size=3,
-                    ),
-                ],
-                style={"margin-top": "40px", "padding": "20px"},
+                            html.P(
+                                "Material Available",
+                                style={"font-size": "30px"},
+                            ),
+                             # Button to trigger SPARQL query
+                            html.Button("Material Available", id="fetch-material-data"),
+                            # DataTable to display SPARQL results
+                            dash_table.DataTable(
+                                id="material-data-table",
+                                columns=[
+                                    {"name": "Recipe", "id": "recipe"},
+                                    {"name": "Fabric Block Design", "id": "fabricBlockDesign"},
+                                    {"name": "Required Amount", "id": "requiredAmount"},
+                                    {"name": "Available Amount", "id": "availableAmount"},
+                                    {"name": "Is Available", "id": "isAvailable"},
+                                ],
+                                style_table={
+                                    "overflowX": "auto",
+                                    "width": "100%",
+                                    "margin-top": "20px",
+                                },
+                                style_cell={
+                                    "textAlign": "left",
+                                    "padding": "5px",
+                                },
+                                style_header={
+                                    "backgroundColor": "rgb(230, 230, 230)",
+                                    "fontWeight": "bold",
+                                },
+                                page_size=5,
+                            ),
+                        ]        
             ),
             dcc.Link("Back to Home", href="/", style={"display": "block", "margin-top": "30px", "text-align": "center"}),
         ],
         style={"max-width": "1200px", "margin": "0 auto", "padding": "20px"},  # Centralize entire content
     )
 
+def fetch_material():
+    query = """
+    PREFIX : <http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+    SELECT 
+    ?recipe ?fabricBlockDesign ?requiredAmount ?availableAmount 
+    (IF(?availableAmount >= ?requiredAmount, "Yes", "No") AS ?isAvailable)
+    WHERE {
+    ?recipe :hasRequirement ?requirement .
+  
+    ?requirement :requiresFabricBlockDesign ?fabricBlockDesign .
+    ?requirement :fabricBlockAmount ?requiredAmount .
+  
+    {
+    SELECT ?fabricBlockDesign (COUNT(?fabricBlock) AS ?availableAmount)
+    WHERE {
+      ?fabricBlock rdf:type :FabricBlock .
+      ?fabricBlock :followsFabricBlockDesign ?fabricBlockDesign .
+    }
+    GROUP BY ?fabricBlockDesign
+        }
+    }
+    """
+    client = SPARQLWrapper(SPARQL_ENDPOINT)
+    client.setQuery(query)
+    client.setReturnFormat(JSON)
+    try:
+        # Query the endpoint and get results
+        results = client.query().convert()
+        
+        # Parse the results into a DataFrame
+        bindings = results['results']['bindings']
+        data = [
+            {
+                'recipe': item['recipe']['value'],
+                'fabricBlockDesign': item['fabricBlockDesign']['value'],
+                'requiredAmount': item['requiredAmount']['value'],
+                'availableAmount': item['availableAmount']['value'],
+                'isAvailable': item['isAvailable']['value']
+            }
+            for item in bindings
+        ]
+        df = pd.DataFrame(data)
+        
+        # Return or display the DataFrame
+        return df
+    
+    except Exception as e:
+        print(f"Error querying SPARQL endpoint: {e}")
+        return []
 #resource event, fabricBlocks Dashboard
 def fetch_fb():
     query = """
@@ -426,6 +481,21 @@ def update_fb_table(n_clicks):
         print(f"Error fetching SPARQL data: {e}")
         return []
     
+@app.callback(
+    Output("material-data-table", "data"),
+    Input("fetch-material-data", "n_clicks"),
+    prevent_initial_call=True
+)
+
+def update_material_table(n_clicks):
+    try:
+        # Fetch data from GraphDB
+        data = fetch_fb()
+        return data
+    except Exception as e:
+        print(f"Error fetching SPARQL data: {e}")
+        return []
+        
 # Data Callbacks for Resource Event Dashboard
 @app.callback(
     Output("res-dashboard-table", "data", allow_duplicate=True),
