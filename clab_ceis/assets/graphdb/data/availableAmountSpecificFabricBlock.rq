@@ -4,6 +4,6 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT (COUNT(?fabricBlock) AS ?availableFB)
 WHERE {
-    ?fabricBlock :usesFabricBlockDesign :FB14x40 .  # Link FabricBlock to FB14x40
+    ?fabricBlock :followsFabricBlockDesign :FB14x40 .  # Link FabricBlock to FB14x40
 }
 
