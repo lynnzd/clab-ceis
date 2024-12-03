@@ -13,7 +13,6 @@ SPARQL_ENDPOINT = "http://localhost:7200/repositories/clab-ceis"
 
 
 
-
 # Home Page Layout
 def home_page():
     return html.Div(
@@ -70,7 +69,6 @@ def home_page():
             ),
         ]
     )
-
 # Skirt Page Layout
 def skirt_page():
     return html.Div(
@@ -128,8 +126,6 @@ def skirt_page():
             dcc.Link("Back to Home", href="/", className="back-link"),
         ],
     )
-
-
 # Top Page Layout
 def top_page():
     return html.Div(
@@ -186,44 +182,43 @@ def top_page():
             dcc.Link("Back to Home", href="/", className="back-link"),
         ],
     )
-
 # Dashboard Page Layout
 def dashboard_page():
     return html.Div(
         children=[
             
-            
             # Resource Event Dashboard
             html.Div(
                 children=[
-                    html.H2("Resource Event Dashboard", style={"margin-bottom": "20px"}),
-                    html.Button(
-                        "Update DataTable", 
-                        id="update-button", 
-                        style={"margin-bottom": "20px"}
-                    ),
-                    dash_table.DataTable(
-                        id="res-dashboard-table",
-                        columns=[
-                            {"name": col, "id": col} for col in data.get_data().columns  # Dynamically fetch columns
-                        ],
-                        style_table={
-                            "overflowX": "auto",
-                            "width": "100%",
-                            "margin": "0 auto",
-                        },
-                        style_cell={
-                            "textAlign": "left",
-                            "padding": "5px",
-                        },
-                        style_header={
-                            "backgroundColor": "rgb(230, 230, 230)",
-                            "fontWeight": "bold",
-                        },
-                        page_size=5,
-                    ),
-                ],
-                style={"margin-top": "40px", "padding": "20px"},
+                            html.P(
+                                "Fabric Block",
+                                style={"font-size": "30px"},
+                            ),
+                             # Button to trigger SPARQL query
+                            html.Button("Fabric Block Data", id="fetch-fb-data"),
+                            # DataTable to display SPARQL results
+                            dash_table.DataTable(
+                                id="fb-data-table",
+                                columns=[
+                                    {"name": "FabricBlock", "id": "fabricBlock"}
+                                ],
+                                style_table={
+                                    "overflowX": "auto",
+                                    "width": "100%",
+                                    "margin-top": "20px",
+                                },
+                                style_cell={
+                                    "textAlign": "left",
+                                    "padding": "5px",
+                                },
+                                style_header={
+                                    "backgroundColor": "rgb(230, 230, 230)",
+                                    "fontWeight": "bold",
+                                },
+                                page_size=5,
+                            ),
+                        ]
+                       
             ),
             # Circular Economy Dashboard
             html.Div(
@@ -262,6 +257,34 @@ def dashboard_page():
         ],
         style={"max-width": "1200px", "margin": "0 auto", "padding": "20px"},  # Centralize entire content
     )
+
+#resource event, fabricBlocks Dashboard
+def fetch_fb():
+    query = """
+    PREFIX : <http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+    SELECT ?fabricBlock
+    WHERE {
+        ?fabricBlock rdf:type :FabricBlock . 
+}
+    """
+    client = SPARQLWrapper(SPARQL_ENDPOINT)
+    client.setQuery(query)
+    client.setReturnFormat(JSON)
+    try:
+        results = client.query().convert()
+        
+        # Extract the last part of the URI for each recipe
+        return [
+            {"fabricBlock": result["fabricBlock"]["value"].split("/")[-1]}  # Extracts only the last part
+            for result in results["results"]["bindings"]
+        ]
+    except Exception as e:
+        print(f"Error querying SPARQL endpoint: {e}")
+        return []
 
 def fetch_skirt_recipes():
     query = """
@@ -331,7 +354,7 @@ app.layout = html.Div(
                 dcc.Link("Dashboard", href="/dashboard", className="menu-link", style={"margin-right": "20px"}),
                 dcc.Link("Skirt", href="/skirt", className="menu-link", style={"margin-right": "20px"}),
                 dcc.Link("Top", href="/top", className="menu-link"),
-            ],
+            ],  
             style={
                 "background-color": "#f5f5f5",
                 "padding": "10px",
@@ -388,6 +411,21 @@ def update_top_table(n_clicks):
         print(f"Error fetching SPARQL data: {e}")
         return []
 
+@app.callback(
+    Output("fb-data-table", "data"),
+    Input("fetch-fb-data", "n_clicks"),
+    prevent_initial_call=True
+)
+
+def update_fb_table(n_clicks):
+    try:
+        # Fetch data from GraphDB
+        data = fetch_fb()
+        return data
+    except Exception as e:
+        print(f"Error fetching SPARQL data: {e}")
+        return []
+    
 # Data Callbacks for Resource Event Dashboard
 @app.callback(
     Output("res-dashboard-table", "data", allow_duplicate=True),
@@ -422,3 +460,11 @@ def update_table(n_clicks):
 
 if __name__ == "__main__":
     app.run_server(debug=True)
+
+
+
+
+#TO DO: refactoring
+#resource event, fabricBlocks Dashboard
+#Link recipes
+#is material for recipe available 
