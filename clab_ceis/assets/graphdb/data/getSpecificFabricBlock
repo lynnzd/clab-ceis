@@ -1,0 +1,14 @@
+PREFIX : <http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT (STRAFTER(STR(?fabricBlock), "http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/") AS ?fabricBlock)
+WHERE {
+  ?fabricBlock rdf:type :FabricBlock .                  # Ensure ?fabricblock is a FabricBlock
+  ?fabricBlock rdfs:followsFabricBlockDesign* ?fabricBlockDesign . # Match the relationship
+  # ?fabricBlock rdfs:followsFabricBlockDesign :FB14x40
+}
+
+# 1. getRecipe 
+# What material is needed? get hasRequirement
+# 2. isMaterialAvailable?(What fabricBlockDesign does recipe use, how many, query for amount of fabricblocks for needed FBDesign, if amount >= required return true, -> yes, else no)

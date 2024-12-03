@@ -1,0 +1,10 @@
+PREFIX : <http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT (STRAFTER(STR(?recipe), "http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/") AS ?recipeName)
+WHERE {
+  ?design rdf:type/rdfs:subClassOf* :SkirtDesign .  # Find all instances of SkirtDesign or subclasses
+  ?recipe :isRecipeOf ?design .                    # Get recipes linked to those instances
+}
