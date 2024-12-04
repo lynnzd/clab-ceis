@@ -1,0 +1,26 @@
+PREFIX : <http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT 
+  ?fabricBlockDesign 
+  (IF(?availableAmount > 0, "Yes", "No") AS ?isAvailable)
+  ?availableAmount 
+ 
+WHERE {
+  # Find all FabricBlockDesigns linked to requirements
+  ?requirement :requiresFabricBlockDesign ?fabricBlockDesign .
+  ?requirement :fabricBlockAmount ?requiredAmount .
+
+  # Count the available FabricBlocks for each FabricBlockDesign
+  {
+    SELECT ?fabricBlockDesign (COUNT(?fabricBlock) AS ?availableAmount)
+    WHERE {
+      ?fabricBlock rdf:type :FabricBlock .
+      ?fabricBlock :followsFabricBlockDesign ?fabricBlockDesign .
+    }
+    GROUP BY ?fabricBlockDesign
+  }
+}
+
+

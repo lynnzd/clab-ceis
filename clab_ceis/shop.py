@@ -236,7 +236,7 @@ def dashboard_page():
                                     {"name": "Fabric Block Design", "id": "fabricBlockDesign"},
                                     {"name": "Required Amount", "id": "requiredAmount"},
                                     {"name": "Available Amount", "id": "availableAmount"},
-                                    {"name": "Is Available", "id": "isAvailable"},
+                                    {"name": "Ready For Assembly", "id": "readyForAssembly"},
                                 ],
                                 style_table={
                                     "overflowX": "auto",
@@ -271,25 +271,27 @@ def fetch_material():
     PREFIX : <http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/>
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
     SELECT 
     ?recipe ?fabricBlockDesign ?requiredAmount ?availableAmount 
-    (IF(?availableAmount >= ?requiredAmount, "Yes", "No") AS ?isAvailable)
+    (IF(?availableAmount >= ?requiredAmount, "Yes", "No") AS ?readyForAssembly)
     WHERE {
+    # Link recipe to its requirement
     ?recipe :hasRequirement ?requirement .
-  
+    
+    # Link requirement to a specific FabricBlockDesign and its required amount
     ?requirement :requiresFabricBlockDesign ?fabricBlockDesign .
     ?requirement :fabricBlockAmount ?requiredAmount .
-  
+    
+    # Count the available FabricBlocks for the specified FabricBlockDesign
     {
-    SELECT ?fabricBlockDesign (COUNT(?fabricBlock) AS ?availableAmount)
-    WHERE {
-      ?fabricBlock rdf:type :FabricBlock .
-      ?fabricBlock :followsFabricBlockDesign ?fabricBlockDesign .
-    }
-    GROUP BY ?fabricBlockDesign
+        SELECT ?fabricBlockDesign (COUNT(?fabricBlock) AS ?availableAmount)
+        WHERE {
+        ?fabricBlock rdf:type :FabricBlock .
+        ?fabricBlock :followsFabricBlockDesign ?fabricBlockDesign .
         }
+        GROUP BY ?fabricBlockDesign
+    }
     }
     """
     client = SPARQLWrapper(SPARQL_ENDPOINT)
@@ -298,21 +300,21 @@ def fetch_material():
     try:
         # Query the endpoint and get results
         results = client.query().convert()
-        
         # Parse the results into a DataFrame
         bindings = results['results']['bindings']
         data = [
             {
-                'recipe': item['recipe']['value'].split("/")[-1],
-                'fabricBlockDesign': item['fabricBlockDesign']['value'],
-                'requiredAmount': item['requiredAmount']['value'],
-                'availableAmount': item['availableAmount']['value'],
-                'isAvailable': item['isAvailable']['value']
+                'recipe': item['recipe']['value'].split("/")[-1],  # Extract the last part
+                'fabricBlockDesign': item['fabricBlockDesign']['value'].split("/")[-1],  # Extract the last part
+                'requiredAmount': int(item['requiredAmount']['value']),  # Convert to integer
+                'availableAmount': int(item['availableAmount']['value']),  # Convert to integer
+                'readyForAssembly': item['readyForAssembly']['value']  # Keep as string
             }
             for item in bindings
         ]
         df = pd.DataFrame(data)
-        
+        return df.to_dict('records')
+
         # Return or display the DataFrame
         return df
     
@@ -496,7 +498,7 @@ def update_fb_table(n_clicks):
 def update_material_table(n_clicks):
     try:
         # Fetch data from GraphDB
-        data = fetch_fb()
+        data = fetch_material()
         return data
     except Exception as e:
         print(f"Error fetching SPARQL data: {e}")
@@ -530,7 +532,7 @@ def onTapNode(tapNodeData):
     [Input("update-button", "n_clicks")],
     prevent_initial_call=True
 )
-def update_table(n_clicks):
+def update_material_table(n_clicks):
     return data.get_data().to_dict("records")
 
 

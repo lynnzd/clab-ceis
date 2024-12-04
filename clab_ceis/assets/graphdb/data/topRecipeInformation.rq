@@ -1,0 +1,23 @@
+PREFIX : <http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?recipe ?fabricBlockDesign ?requiredAmount ?pdfURL
+WHERE {
+  # Fetch the recipe
+  ?design rdf:type/rdfs:subClassOf* :TopDesign .  # Find all instances of SkirtDesign or subclasses
+  ?recipe :isRecipeOf ?design .            # Link recipe to its requirement
+  
+  # Link recipe to requirement
+  ?recipe :hasRequirement ?requirement .
+    
+  # Get fabric block requirements
+  ?requirement :requiresFabricBlockDesign ?fabricBlockDesign .
+  ?requirement :fabricBlockAmount ?requiredAmount .    # Fetch the required amount
+
+  # Get the PDF URL
+  ?recipe :hasPDF ?pdfProperty .                       # Link recipe to the PDF
+  ?pdfProperty :URLtoPDF ?pdfURL .                     # Get the URL as a data property
+}
+
+

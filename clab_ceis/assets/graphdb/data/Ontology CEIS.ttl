@@ -1,0 +1,492 @@
+@prefix : <http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/> .
+
+<http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20> rdf:type owl:Ontology .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20#hasLocation
+:hasLocation rdf:type owl:ObjectProperty ;
+             owl:inverseOf :isLocationOf ;
+             rdfs:domain :FabricBlock ;
+             rdfs:range :Location .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20#isLocationOf
+:isLocationOf rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/fabricBlockDesignRequiredBy
+:fabricBlockDesignRequiredBy rdf:type owl:ObjectProperty ;
+                             owl:inverseOf :requiresFabricBlockDesign .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/followsFabricBlockDesign
+:followsFabricBlockDesign rdf:type owl:ObjectProperty ;
+                          owl:inverseOf :isFollowedByFabricBlock ;
+                          rdfs:domain :FabricBlock ;
+                          rdfs:range :FabricBlockDesign .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/hasFabricBlock
+:hasFabricBlock rdf:type owl:ObjectProperty ;
+                owl:inverseOf :isFabricBlockOf ;
+                rdfs:domain :GarmentDesign ;
+                rdfs:range :FabricBlockDesign .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/hasPDF
+:hasPDF rdf:type owl:ObjectProperty ;
+        owl:inverseOf :isPDFOf ;
+        rdfs:domain :Recipe ;
+        rdfs:range :PDF .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/hasProcessRequirement
+:hasProcessRequirement rdf:type owl:ObjectProperty ;
+                       owl:inverseOf :isProcessRequirementOf ;
+                       rdfs:domain :Recipe ;
+                       rdfs:range :ProcessReqirement .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/hasRecipe
+:hasRecipe rdf:type owl:ObjectProperty ;
+           owl:inverseOf :isRecipeOf ;
+           rdfs:domain :Design ;
+           rdfs:range :Recipe .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/hasRequirement
+:hasRequirement rdf:type owl:ObjectProperty ;
+                owl:inverseOf :isRequirementOf ;
+                rdfs:domain :Recipe ;
+                rdfs:range :Requirement .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/isFabricBlockOf
+:isFabricBlockOf rdf:type owl:ObjectProperty ;
+                 rdfs:subPropertyOf owl:topObjectProperty .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/isFollowedByFabricBlock
+:isFollowedByFabricBlock rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/isPDFOf
+:isPDFOf rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/isProcessRequirementOf
+:isProcessRequirementOf rdf:type owl:ObjectProperty ;
+                        rdfs:subPropertyOf owl:topObjectProperty .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/isRecipeOf
+:isRecipeOf rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/isRequirementOf
+:isRequirementOf rdf:type owl:ObjectProperty .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/madeThroughFabricBlock
+:madeThroughFabricBlock rdf:type owl:ObjectProperty ;
+                        rdfs:subPropertyOf owl:topObjectProperty ;
+                        rdfs:domain :Garment ;
+                        rdfs:range :FabricBlock .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/madeThroughRecipe
+:madeThroughRecipe rdf:type owl:ObjectProperty ;
+                   rdfs:domain :Garment ;
+                   rdfs:range :Recipe .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/requiresFabricBlockDesign
+:requiresFabricBlockDesign rdf:type owl:ObjectProperty ;
+                           rdfs:domain :FabricBlockRequirement ;
+                           rdfs:range :FabricBlockDesign .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/URLtoPDF
+:URLtoPDF rdf:type owl:DatatypeProperty ;
+          rdfs:domain :PDF .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/fabricBlockAmount
+:fabricBlockAmount rdf:type owl:DatatypeProperty ;
+                   rdfs:domain :FabricBlockRequirement .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/sewingAmount
+:sewingAmount rdf:type owl:DatatypeProperty ;
+              rdfs:domain :SewingRequirement .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/shippingAmount
+:shippingAmount rdf:type owl:DatatypeProperty ;
+                rdfs:domain :ShippingRequirement .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/steamingAmount
+:steamingAmount rdf:type owl:DatatypeProperty ;
+                rdfs:domain :SteamingRequirement .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20#Location
+:Location rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/Design
+:Design rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/FabricBlock
+:FabricBlock rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/FabricBlockDesign
+:FabricBlockDesign rdf:type owl:Class ;
+                   rdfs:subClassOf :Design ;
+                   owl:disjointWith :GarmentDesign .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/FabricBlockRequirement
+:FabricBlockRequirement rdf:type owl:Class ;
+                        rdfs:subClassOf :Requirement ;
+                        owl:disjointWith :ProcessReqirement .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/Garment
+:Garment rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/GarmentDesign
+:GarmentDesign rdf:type owl:Class ;
+               rdfs:subClassOf :Design .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/PDF
+:PDF rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/ProcessReqirement
+:ProcessReqirement rdf:type owl:Class ;
+                   rdfs:subClassOf :Requirement .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/Recipe
+:Recipe rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/Requirement
+:Requirement rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/SewingRequirement
+:SewingRequirement rdf:type owl:Class ;
+                   rdfs:subClassOf :ProcessReqirement .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/ShippingRequirement
+:ShippingRequirement rdf:type owl:Class ;
+                     rdfs:subClassOf :ProcessReqirement .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/SkirtDesign
+:SkirtDesign rdf:type owl:Class ;
+             rdfs:subClassOf :GarmentDesign ;
+             owl:disjointWith :TopDesign .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/SteamingRequirement
+:SteamingRequirement rdf:type owl:Class ;
+                     rdfs:subClassOf :ProcessReqirement .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/TopDesign
+:TopDesign rdf:type owl:Class ;
+           rdfs:subClassOf :GarmentDesign .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20#FB1.2
+:FB1.2 rdf:type owl:NamedIndividual ,
+                :FabricBlock ;
+       :hasLocation :location1 ;
+       :followsFabricBlockDesign :FB14x40 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20#location1
+:location1 rdf:type owl:NamedIndividual ,
+                    :Location .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20#location2
+:location2 rdf:type owl:NamedIndividual ,
+                    :Location .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20#location3
+:location3 rdf:type owl:NamedIndividual ,
+                    :Location .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/FB1
+:FB1 rdf:type owl:NamedIndividual ,
+              :FabricBlock ;
+     :hasLocation :location1 ;
+     :followsFabricBlockDesign :FB14x40 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/FB14x40
+:FB14x40 rdf:type owl:NamedIndividual ,
+                  :FabricBlockDesign ;
+         :hasRecipe :FBRecipe1 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/FB2
+:FB2 rdf:type owl:NamedIndividual ,
+              :FabricBlock ;
+     :hasLocation :location2 ;
+     :followsFabricBlockDesign :FB64x80 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/FB3
+:FB3 rdf:type owl:NamedIndividual ,
+              :FabricBlock ;
+     :hasLocation :location3 ;
+     :followsFabricBlockDesign :FBL100x160 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/FB64x80
+:FB64x80 rdf:type owl:NamedIndividual ,
+                  :FabricBlockDesign ;
+         :hasRecipe :FBRecipe2 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/FBL100x160
+:FBL100x160 rdf:type owl:NamedIndividual ,
+                     :FabricBlockDesign ;
+            :hasRecipe :FBRecipe3 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/FBRecipe1
+:FBRecipe1 rdf:type owl:NamedIndividual ,
+                    :Recipe ;
+           :hasRequirement :sewingRequirementFB1 ,
+                           :shippingRequirementFB ,
+                           :steamingRequirementFB1 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/FBRecipe2
+:FBRecipe2 rdf:type owl:NamedIndividual ,
+                    :Recipe ;
+           :hasRequirement :sewingRequirementFB2 ,
+                           :shippingRequirementFB ,
+                           :steamingRequirementFB2 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/FBRecipe3
+:FBRecipe3 rdf:type owl:NamedIndividual ,
+                    :Recipe ;
+           :hasRequirement :sewingRequirementFB3 ,
+                           :shippingRequirementFB ,
+                           :steamingRequirementFB3 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/cropTopDesign
+:cropTopDesign rdf:type owl:NamedIndividual ,
+                        :TopDesign ;
+               :hasRecipe :topRecipe1 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/requiresFabricBlockType1
+:requiresFabricBlockType1 rdf:type owl:NamedIndividual ,
+                                   :FabricBlockRequirement ;
+                          :requiresFabricBlockDesign :FBL100x160 ;
+                          :fabricBlockAmount 2 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/requiresFabricBlockType2
+:requiresFabricBlockType2 rdf:type owl:NamedIndividual ,
+                                   :FabricBlockRequirement ;
+                          :requiresFabricBlockDesign :FB64x80 ;
+                          :fabricBlockAmount 1 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/requiresFabricBlockType3
+:requiresFabricBlockType3 rdf:type owl:NamedIndividual ,
+                                   :FabricBlockRequirement ;
+                          :requiresFabricBlockDesign :FB14x40 ;
+                          :fabricBlockAmount 2 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/sewingRequirement1
+:sewingRequirement1 rdf:type owl:NamedIndividual ,
+                             :SewingRequirement ;
+                    :sewingAmount 0.0013 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/sewingRequirement2
+:sewingRequirement2 rdf:type owl:NamedIndividual ,
+                             :SewingRequirement ;
+                    :sewingAmount 0.0009 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/sewingRequirementFB1
+:sewingRequirementFB1 rdf:type owl:NamedIndividual ,
+                               :SewingRequirement ;
+                      :sewingAmount 0.0003 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/sewingRequirementFB2
+:sewingRequirementFB2 rdf:type owl:NamedIndividual ,
+                               :SewingRequirement ;
+                      :sewingAmount 0.0007 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/sewingRequirementFB3
+:sewingRequirementFB3 rdf:type owl:NamedIndividual ,
+                               :SewingRequirement ;
+                      :sewingAmount 0.0013 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/shippingRequirement1
+:shippingRequirement1 rdf:type owl:NamedIndividual ,
+                               :ShippingRequirement ;
+                      :shippingAmount 157.5 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/shippingRequirement2
+:shippingRequirement2 rdf:type owl:NamedIndividual ,
+                               :ShippingRequirement ;
+                      :shippingAmount 157.5 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/shippingRequirementFB
+:shippingRequirementFB rdf:type owl:NamedIndividual ,
+                                :ShippingRequirement ;
+                       :shippingAmount 136.5 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/skirt1
+:skirt1 rdf:type owl:NamedIndividual ,
+                 :Garment ;
+        :madeThroughFabricBlock :FB3 ;
+        :madeThroughRecipe :skirtRecipe1 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/skirtRecipe1
+:skirtRecipe1 rdf:type owl:NamedIndividual ,
+                       :Recipe ;
+              :hasPDF <https://drive.google.com/file/d/1fS8NBVL7hmfNlbSUTJ6Lp9dB4ykZ4yeG/PDFskirtRecipe1> ;
+              :hasProcessRequirement :sewingRequirement2 ,
+                                     :shippingRequirement2 ,
+                                     :steamingRequirement2 ;
+              :hasRequirement :requiresFabricBlockType1 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/sommarSkirtDesign
+:sommarSkirtDesign rdf:type owl:NamedIndividual ,
+                            :SkirtDesign ;
+                   :hasRecipe :skirtRecipe1 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/steamingRequirement1
+:steamingRequirement1 rdf:type owl:NamedIndividual ,
+                               :SteamingRequirement ;
+                      :steamingAmount 0.005 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/steamingRequirement2
+:steamingRequirement2 rdf:type owl:NamedIndividual ,
+                               :SteamingRequirement ;
+                      :steamingAmount 0.005 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/steamingRequirementFB1
+:steamingRequirementFB1 rdf:type owl:NamedIndividual ,
+                                 :SteamingRequirement ;
+                        :steamingAmount 0.005 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/steamingRequirementFB2
+:steamingRequirementFB2 rdf:type owl:NamedIndividual ,
+                                 :SteamingRequirement ;
+                        :steamingAmount 0.003 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/steamingRequirementFB3
+:steamingRequirementFB3 rdf:type owl:NamedIndividual ,
+                                 :SteamingRequirement ;
+                        :steamingAmount 0.002 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/top1
+:top1 rdf:type owl:NamedIndividual ,
+               :Garment ;
+      :madeThroughFabricBlock :FB1.2 ,
+                              :FB1 ,
+                              :FB2 ;
+      :madeThroughRecipe :topRecipe1 .
+
+
+###  http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/topRecipe1
+:topRecipe1 rdf:type owl:NamedIndividual ,
+                     :Recipe ;
+            :hasPDF <https://drive.google.com/file/d/1fS8NBVL7hmfNlbSUTJ6Lp9dB4ykZ4yeG/PDFskirtRecipe1> ;
+            :hasProcessRequirement :sewingRequirement1 ,
+                                   :shippingRequirement1 ,
+                                   :steamingRequirement1 ;
+            :hasRequirement :requiresFabricBlockType2 ,
+                            :requiresFabricBlockType3 .
+
+
+###  https://drive.google.com/file/d/1dgI7kL4OGAIbM5G10Qhjq0l9HyiEXkD-/PDFtopRecipe1
+<https://drive.google.com/file/d/1dgI7kL4OGAIbM5G10Qhjq0l9HyiEXkD-/PDFtopRecipe1> rdf:type owl:NamedIndividual ,
+                                                                                           :PDF ;
+                                                                                  :URLtoPDF "https://drive.google.com/file/d/1dgI7kL4OGAIbM5G10Qhjq0l9HyiEXkD-/view?usp=drivesdk" .
+
+
+###  https://drive.google.com/file/d/1fS8NBVL7hmfNlbSUTJ6Lp9dB4ykZ4yeG/PDFskirtRecipe1
+<https://drive.google.com/file/d/1fS8NBVL7hmfNlbSUTJ6Lp9dB4ykZ4yeG/PDFskirtRecipe1> rdf:type owl:NamedIndividual ,
+                                                                                             :PDF ;
+                                                                                    :URLtoPDF "https://drive.google.com/file/d/1fS8NBVL7hmfNlbSUTJ6Lp9dB4ykZ4yeG/view?usp=drivesdk" .
+
+
+#################################################################
+#    General axioms
+#################################################################
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :Location
+                :Design
+                :FabricBlock
+                :Garment
+                :PDF
+                :Recipe
+                :Requirement
+              )
+] .
+
+
+###  Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi

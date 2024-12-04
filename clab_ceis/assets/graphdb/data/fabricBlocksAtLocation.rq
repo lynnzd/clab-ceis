@@ -1,0 +1,18 @@
+PREFIX : <http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?location ?fabricBlockDesign (COUNT(?fabricBlock) AS ?countAtLocation)
+WHERE {
+  # Retrieve fabric blocks and their associated designs and locations
+  ?fabricBlock rdf:type :FabricBlock .
+  ?fabricBlock :followsFabricBlockDesign ?fabricBlockDesign .
+  ?fabricBlock :hasLocation ?location .
+  
+  # Ensure the location is one of the specified ones
+  FILTER (?location IN (:location1, :location2, :location3))
+}
+GROUP BY ?location ?fabricBlockDesign
+ORDER BY ?location ?fabricBlockDesign
+
+

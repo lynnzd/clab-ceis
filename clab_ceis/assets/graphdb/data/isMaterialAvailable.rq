@@ -4,7 +4,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT 
   ?recipe ?fabricBlockDesign ?requiredAmount ?availableAmount 
-  (IF(?availableAmount >= ?requiredAmount, "Yes", "No") AS ?isAvailable)
+  (IF(?availableAmount >= ?requiredAmount, "Yes", "No") AS ?readyForAssembly)
 WHERE {
   # Link recipe to its requirement
   ?recipe :hasRequirement ?requirement .
