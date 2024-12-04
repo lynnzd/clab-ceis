@@ -101,7 +101,9 @@ def skirt_page():
                             dash_table.DataTable(
                                 id="skirt-data-table",
                                 columns=[
-                                    {"name": "Recipe", "id": "recipe"}
+                                    {"name": "Recipe", "id": "recipe", "presentation": "markdown"},
+                                    {"name": "Fabric Block Design", "id": "fabricBlockDesign"},
+                                    {"name": "Required Amount", "id": "requiredAmount"},
                                 ],
                                 style_table={
                                     "overflowX": "auto",
@@ -245,8 +247,8 @@ def dashboard_page():
                                 },
                                 style_cell={
                                     "textAlign": "left",
-                                    "padding": "10px",  # Increase padding for better spacing
-                                    "font-size": "16px",  # Increase font size for readability
+                                    "padding": "10px",  # Increased padding for better spacing
+                                    "font-size": "16px",  # Increased font size for readability
                                     "minWidth": "100px",  # Set minimum column width
                                     "maxWidth": "200px",  # Set maximum column width
                                     "whiteSpace": "normal",
@@ -254,11 +256,12 @@ def dashboard_page():
                                 style_header={
                                     "backgroundColor": "rgb(230, 230, 230)",
                                     "fontWeight": "bold",
-                                    "font-size": "18px",  # Increase header font size
+                                    "font-size": "18px",  # Increased header font size
                                     "textAlign": "center",
                                 },
                                 page_size=5,
                             ),
+
                         ]        
             ),
             dcc.Link("Back to Home", href="/", style={"display": "block", "margin-top": "30px", "text-align": "center"}),
@@ -273,54 +276,58 @@ def fetch_material():
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
     SELECT 
-    ?recipe ?fabricBlockDesign ?requiredAmount ?availableAmount 
-    (IF(?availableAmount >= ?requiredAmount, "Yes", "No") AS ?readyForAssembly)
+        (STRAFTER(STR(?recipe), "http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/") AS ?recipeName)
+        (STRAFTER(STR(?fabricBlockDesign), "http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/") AS ?fabricBlockDesignName)
+        ?requiredAmount
+        ?availableAmount
+        (IF(?availableAmount >= ?requiredAmount, "Yes", "No") AS ?readyForAssembly)
     WHERE {
-    # Link recipe to its requirement
-    ?recipe :hasRequirement ?requirement .
-    
-    # Link requirement to a specific FabricBlockDesign and its required amount
-    ?requirement :requiresFabricBlockDesign ?fabricBlockDesign .
-    ?requirement :fabricBlockAmount ?requiredAmount .
-    
-    # Count the available FabricBlocks for the specified FabricBlockDesign
-    {
-        SELECT ?fabricBlockDesign (COUNT(?fabricBlock) AS ?availableAmount)
-        WHERE {
-        ?fabricBlock rdf:type :FabricBlock .
-        ?fabricBlock :followsFabricBlockDesign ?fabricBlockDesign .
+        # Link recipes to their requirements
+        ?recipe :hasRequirement ?requirement .
+        ?requirement :requiresFabricBlockDesign ?fabricBlockDesign .
+        ?requirement :fabricBlockAmount ?requiredAmount .
+
+        # Subquery to calculate available amount
+        OPTIONAL {
+            SELECT ?fabricBlockDesign (COUNT(?fabricBlock) AS ?availableAmount)
+            WHERE {
+                ?fabricBlock rdf:type :FabricBlock .
+                ?fabricBlock :followsFabricBlockDesign ?fabricBlockDesign .
+            }
+            GROUP BY ?fabricBlockDesign
         }
-        GROUP BY ?fabricBlockDesign
     }
-    }
+
     """
     client = SPARQLWrapper(SPARQL_ENDPOINT)
     client.setQuery(query)
     client.setReturnFormat(JSON)
     try:
         # Query the endpoint and get results
-        results = client.query().convert()
-        # Parse the results into a DataFrame
+        results = client.query().convert()  
+        print(results)     
         bindings = results['results']['bindings']
+        
         data = [
             {
-                'recipe': item['recipe']['value'].split("/")[-1],  # Extract the last part
-                'fabricBlockDesign': item['fabricBlockDesign']['value'].split("/")[-1],  # Extract the last part
-                'requiredAmount': int(item['requiredAmount']['value']),  # Convert to integer
-                'availableAmount': int(item['availableAmount']['value']),  # Convert to integer
-                'readyForAssembly': item['readyForAssembly']['value']  # Keep as string
+                'recipe': item['recipeName']['value'] if 'recipeName' in item else None,
+                'fabricBlockDesign': item['fabricBlockDesignName']['value'] if 'fabricBlockDesignName' in item else None,
+                'requiredAmount': int(item['requiredAmount']['value']) if 'requiredAmount' in item else 0,
+                'availableAmount': int(item['availableAmount']['value']) if 'availableAmount' in item else 0,
+                'readyForAssembly': item['readyForAssembly']['value'] if 'readyForAssembly' in item else "No"
             }
             for item in bindings
         ]
-        df = pd.DataFrame(data)
-        return df.to_dict('records')
 
-        # Return or display the DataFrame
-        return df
-    
+        # Debug: Print the parsed data
+        print(data)
+
+        return data
+
     except Exception as e:
         print(f"Error querying SPARQL endpoint: {e}")
         return []
+
 #resource event, fabricBlocks Dashboard
 def fetch_fb():
     query = """
@@ -354,25 +361,51 @@ def fetch_skirt_recipes():
     PREFIX : <http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/>
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
-    SELECT ?recipe
+    SELECT 
+        (STRAFTER(STR(?recipe), "http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/") AS ?recipeName)
+        (STRAFTER(STR(?fabricBlockDesign), "http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/") AS ?fabricBlockDesignName)
+        ?requiredAmount
+        (STRAFTER(STR(?pdfURL), "http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/") AS ?pdfURLName)
     WHERE {
-      ?design rdf:type/rdfs:subClassOf* :SkirtDesign .
-      ?recipe :isRecipeOf ?design .
+        # Fetch recipes
+        ?design rdf:type/rdfs:subClassOf* :SkirtDesign .
+        ?recipe :isRecipeOf ?design .
+        
+        # Link recipe to requirements
+        ?recipe :hasRequirement ?requirement .
+        ?requirement :requiresFabricBlockDesign ?fabricBlockDesign .
+        ?requirement :fabricBlockAmount ?requiredAmount .
+        
+        # Optional PDF URL
+        OPTIONAL {
+            ?recipe :hasPDF ?pdfProperty .
+            ?pdfProperty :URLtoPDF ?pdfURL .
+        }
     }
+
+
     """
     client = SPARQLWrapper(SPARQL_ENDPOINT)
     client.setQuery(query)
     client.setReturnFormat(JSON)
     try:
         results = client.query().convert()
-        
-        # Extract the last part of the URI for each recipe
-        return [
-            {"recipe": result["recipe"]["value"].split("/")[-1]}  # Extracts only the last part
-            for result in results["results"]["bindings"]
+        bindings = results['results']['bindings']
+
+        data = [
+            {
+                'recipe': item['recipeName']['value'].split("/")[-1] if 'recipeName' in item else None,  # Extract local name
+                'fabricBlockDesign': item['fabricBlockDesignName']['value'].split("/")[-1] if 'fabricBlockDesignName' in item else None,  # Extract local name
+                'requiredAmount': int(item['requiredAmount']['value']) if 'requiredAmount' in item else 0,  # Keep as integer
+                'pdfURL': item['pdfURLName']['value'] if 'pdfURLName' in item else None,  # Keep full URL
+            }
+            for item in bindings
         ]
+
+        print(data)
+        return data
+
     except Exception as e:
         print(f"Error querying SPARQL endpoint: {e}")
         return []
@@ -490,19 +523,19 @@ def update_fb_table(n_clicks):
         return []
     
 @app.callback(
-    Output("material-data-table", "data"),
-    Input("fetch-material-data", "n_clicks"),
-    prevent_initial_call=True
+    Output("material-data-table", "data"),  
+    Input("fetch-material-data", "n_clicks")  
 )
-
 def update_material_table(n_clicks):
+    if n_clicks is None: 
+        return []  
     try:
-        # Fetch data from GraphDB
-        data = fetch_material()
-        return data
+        # Fetch the material data
+        material_data = fetch_material()
+        return material_data 
     except Exception as e:
-        print(f"Error fetching SPARQL data: {e}")
-        return []
+        print(f"Error updating material table: {e}")
+        return [] 
         
 # Data Callbacks for Resource Event Dashboard
 @app.callback(
