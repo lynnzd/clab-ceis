@@ -245,11 +245,17 @@ def dashboard_page():
                                 },
                                 style_cell={
                                     "textAlign": "left",
-                                    "padding": "5px",
+                                    "padding": "10px",  # Increase padding for better spacing
+                                    "font-size": "16px",  # Increase font size for readability
+                                    "minWidth": "100px",  # Set minimum column width
+                                    "maxWidth": "200px",  # Set maximum column width
+                                    "whiteSpace": "normal",
                                 },
                                 style_header={
                                     "backgroundColor": "rgb(230, 230, 230)",
                                     "fontWeight": "bold",
+                                    "font-size": "18px",  # Increase header font size
+                                    "textAlign": "center",
                                 },
                                 page_size=5,
                             ),
@@ -297,7 +303,7 @@ def fetch_material():
         bindings = results['results']['bindings']
         data = [
             {
-                'recipe': item['recipe']['value'],
+                'recipe': item['recipe']['value'].split("/")[-1],
                 'fabricBlockDesign': item['fabricBlockDesign']['value'],
                 'requiredAmount': item['requiredAmount']['value'],
                 'availableAmount': item['availableAmount']['value'],
