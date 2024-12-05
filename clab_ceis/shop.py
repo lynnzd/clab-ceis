@@ -190,38 +190,6 @@ def dashboard_page():
     return html.Div(
         children=[
             
-            # Resource Event Dashboard
-            html.Div(
-                children=[
-                            html.P(
-                                "Fabric Block",
-                                style={"font-size": "30px"},
-                            ),
-                             # Button to trigger SPARQL query
-                            html.Button("Fabric Block Data", id="fetch-fb-data"),
-                            # DataTable to display SPARQL results
-                            dash_table.DataTable(
-                                id="fb-data-table",
-                                columns=[
-                                    {"name": "FabricBlock", "id": "fabricBlock"}
-                                ],
-                                style_table={
-                                    "overflowX": "auto",
-                                    "width": "100%",
-                                    "margin-top": "20px",
-                                },
-                                style_cell={
-                                    "textAlign": "left",
-                                    "padding": "5px",
-                                },
-                                style_header={
-                                    "backgroundColor": "rgb(230, 230, 230)",
-                                    "fontWeight": "bold",
-                                },
-                                page_size=5,
-                            ),
-                        ]        
-            ),
             html.Div(
                 children=[
                             html.P(
@@ -261,7 +229,7 @@ def dashboard_page():
             html.Div(
                 children=[
                             html.P(
-                                "Material Available",
+                                "Fabric Blocks",
                                 style={"font-size": "30px"},
                             ),
                              # Button to trigger SPARQL query
@@ -351,33 +319,6 @@ def fetch_material():
 
         return data
 
-    except Exception as e:
-        print(f"Error querying SPARQL endpoint: {e}")
-        return []
-#resource event, fabricBlocks Dashboard
-def fetch_fb():
-    query = """
-    PREFIX : <http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/>
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX owl: <http://www.w3.org/2002/07/owl#>
-
-    SELECT ?fabricBlock
-    WHERE {
-        ?fabricBlock rdf:type :FabricBlock . 
-}
-    """
-    client = SPARQLWrapper(SPARQL_ENDPOINT)
-    client.setQuery(query)
-    client.setReturnFormat(JSON)
-    try:
-        results = client.query().convert()
-        
-        # Extract the last part of the URI for each recipe
-        return [
-            {"fabricBlock": result["fabricBlock"]["value"].split("/")[-1]}  # Extracts only the last part
-            for result in results["results"]["bindings"]
-        ]
     except Exception as e:
         print(f"Error querying SPARQL endpoint: {e}")
         return []
@@ -580,21 +521,6 @@ def update_top_table(n_clicks):
     try:
         # Fetch data from GraphDB
         data = fetch_top_recipes()
-        return data
-    except Exception as e:
-        print(f"Error fetching SPARQL data: {e}")
-        return []
-
-@app.callback(
-    Output("fb-data-table", "data"),
-    Input("fetch-fb-data", "n_clicks"),
-    prevent_initial_call=True
-)
-
-def update_fb_table(n_clicks):
-    try:
-        # Fetch data from GraphDB
-        data = fetch_fb()
         return data
     except Exception as e:
         print(f"Error fetching SPARQL data: {e}")
