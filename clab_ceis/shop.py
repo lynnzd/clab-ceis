@@ -247,17 +247,45 @@ def dashboard_page():
                                 },
                                 style_cell={
                                     "textAlign": "left",
-                                    "padding": "10px",  # Increased padding for better spacing
-                                    "font-size": "16px",  # Increased font size for readability
-                                    "minWidth": "100px",  # Set minimum column width
-                                    "maxWidth": "200px",  # Set maximum column width
-                                    "whiteSpace": "normal",
+                                    "padding": "5px",
                                 },
                                 style_header={
                                     "backgroundColor": "rgb(230, 230, 230)",
                                     "fontWeight": "bold",
-                                    "font-size": "18px",  # Increased header font size
-                                    "textAlign": "center",
+                                },
+                                page_size=5,
+                            ),
+
+                        ]        
+            ),
+            html.Div(
+                children=[
+                            html.P(
+                                "Material Available",
+                                style={"font-size": "30px"},
+                            ),
+                             # Button to trigger SPARQL query
+                            html.Button("Location", id="fetch-location-data"),
+                            # DataTable to display SPARQL results
+                            dash_table.DataTable(
+                                id="location-data-table",
+                                columns=[
+                                    {"name": "Location", "id": "location"},
+                                    {"name": "Fabric Block Design", "id": "fabricBlockDesign"},
+                                    {"name": "Count At Location", "id": "countAtLocation"},
+                                ],
+                                style_table={
+                                    "overflowX": "auto",
+                                    "width": "100%",
+                                    "margin-top": "20px",
+                                },
+                                style_cell={
+                                    "textAlign": "left",
+                                    "padding": "5px",
+                                },
+                                style_header={
+                                    "backgroundColor": "rgb(230, 230, 230)",
+                                    "fontWeight": "bold",
                                 },
                                 page_size=5,
                             ),
@@ -305,7 +333,6 @@ def fetch_material():
     try:
         # Query the endpoint and get results
         results = client.query().convert()  
-        print(results)     
         bindings = results['results']['bindings']
         
         data = [
@@ -327,7 +354,6 @@ def fetch_material():
     except Exception as e:
         print(f"Error querying SPARQL endpoint: {e}")
         return []
-
 #resource event, fabricBlocks Dashboard
 def fetch_fb():
     query = """
@@ -438,6 +464,58 @@ def fetch_top_recipes():
         print(f"Error querying SPARQL endpoint: {e}")
         return []
 
+def fetch_location():
+    query = """
+    PREFIX : <http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+    SELECT 
+        (STRAFTER(STR(?location), "http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/") AS ?locationName)
+        (STRAFTER(STR(?fabricBlockDesign), "http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/") AS ?fabricBlockDesignName)
+    WHERE 
+    { 
+        # Find all FabricBlockDesigns linked to requirements 
+        ?requirement :requiresFabricBlockDesign ?fabricBlockDesign . 
+        ?requirement :fabricBlockAmount ?requiredAmount . 
+        # Subquery to calculate availableAmount 
+        OPTIONAL{ 
+  
+    SELECT 
+        ?fabricBlockDesign (COUNT(?fabricBlock) AS ?availableAmount) 
+        WHERE { ?fabricBlock rdf:type :FabricBlock . 
+        ?fabricBlock :followsFabricBlockDesign ?fabricBlockDesign . 
+        }
+      GROUP BY ?fabricBlockDesign 
+      } 
+      # The subquery result (availableAmount) is used in the main WHERE clause 
+      }
+    """
+    client = SPARQLWrapper(SPARQL_ENDPOINT)
+    client.setQuery(query)
+    client.setReturnFormat(JSON)
+    try:
+        results = client.query().convert()
+        print("Raw Results:", results)  # Debug raw results
+        bindings = results['results']['bindings']
+        print("Bindings:", bindings)  # Debug parsed bindings
+        
+        data = [
+            {
+                'location': item['locationName']['value'] if 'locationName' in item else None,
+                'fabricBlockDesign': item['fabricBlockDesignName']['value'] if 'fabricBlockDesignName' in item else None,
+                'countAtLocation': int(item['countAtLocation']['value']) if 'countAtLocation' in item else 0
+            }
+            for item in bindings
+        ]
+
+        print("Processed Data:", data)  # Debug final data
+        return data
+
+    except Exception as e:
+        print(f"Error querying SPARQL endpoint: {e}")
+        return []
+
 
 # Main Layout with Navigation Menu
 app.layout = html.Div(
@@ -526,6 +604,7 @@ def update_fb_table(n_clicks):
     Output("material-data-table", "data"),  
     Input("fetch-material-data", "n_clicks")  
 )
+
 def update_material_table(n_clicks):
     if n_clicks is None: 
         return []  
@@ -537,6 +616,22 @@ def update_material_table(n_clicks):
         print(f"Error updating material table: {e}")
         return [] 
         
+@app.callback(
+    Output("location-data-table", "data"),  
+    Input("fetch-location-data", "n_clicks")  
+)
+
+def update_location_table(n_clicks):
+    if n_clicks is None: 
+        return []  
+    try:
+        # Fetch the material data
+        material_data = fetch_location()
+        return material_data 
+    except Exception as e:
+        print(f"Error updating material table: {e}")
+        return [] 
+            
 # Data Callbacks for Resource Event Dashboard
 @app.callback(
     Output("res-dashboard-table", "data", allow_duplicate=True),
