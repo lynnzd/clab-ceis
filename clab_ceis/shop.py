@@ -457,7 +457,6 @@ def fetch_location():
         print(f"Error querying SPARQL endpoint: {e}")
         return []
 
-
 # Main Layout with Navigation Menu
 app.layout = html.Div(
     children=[
@@ -467,8 +466,6 @@ app.layout = html.Div(
             children=[
                 dcc.Link("Home", href="/", className="menu-link", style={"margin-right": "20px"}),
                 dcc.Link("Dashboard", href="/dashboard", className="menu-link", style={"margin-right": "20px"}),
-                dcc.Link("Skirt", href="/skirt", className="menu-link", style={"margin-right": "20px"}),
-                dcc.Link("Top", href="/top", className="menu-link"),
             ],  
             style={
                 "background-color": "#f5f5f5",
@@ -501,7 +498,6 @@ def display_page(pathname):
     Input("fetch-skirt-data", "n_clicks"),
     prevent_initial_call=True
 )
-
 def update_skirt_table(n_clicks):
     try:
         # Fetch data from GraphDB
@@ -516,7 +512,6 @@ def update_skirt_table(n_clicks):
     Input("fetch-top-data", "n_clicks"),
     prevent_initial_call=True
 )
-
 def update_top_table(n_clicks):
     try:
         # Fetch data from GraphDB
@@ -530,7 +525,6 @@ def update_top_table(n_clicks):
     Output("material-data-table", "data"),  
     Input("fetch-material-data", "n_clicks")  
 )
-
 def update_material_table(n_clicks):
     if n_clicks is None: 
         return []  
@@ -546,7 +540,6 @@ def update_material_table(n_clicks):
     Output("location-data-table", "data"),  
     Input("fetch-location-data", "n_clicks")  
 )
-
 def update_location_table(n_clicks):
     if n_clicks is None: 
         return []  
