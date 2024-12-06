@@ -91,8 +91,8 @@ def skirt_page():
                         className="product-description",
                         children=[
                             html.P(
-                                "This is a beautiful Skirt, perfect for any occasion. "
-                                "Made with high-quality materials, this Skirt will make you look stunning.",
+                                "Wrapped Skirt made of double-sided fabric, in light blue and dark blue colors, that is folded."
+                                "This creates a color-blocking design.",
                                 style={"font-size": "18px"},
                             ),
                             # Button to trigger SPARQL query
@@ -150,8 +150,8 @@ def top_page():
                         className="product-description",
                         children=[
                             html.P(
-                                "This is a stylish top, ideal for cold weather. "
-                                "It combines elegance with comfort, ensuring you stay warm and look great.",
+                                "Crop top made from fine hemp fabric in a linen weave." 
+                                "Loose fit with a T-shape geometric opening at the neck.",
                                 style={"font-size": "18px"},
                             ),
                              # Button to trigger SPARQL query
