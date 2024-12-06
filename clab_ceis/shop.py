@@ -333,22 +333,15 @@ def fetch_skirt_recipes():
         (STRAFTER(STR(?recipe), "http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/") AS ?recipeName)
         (STRAFTER(STR(?fabricBlockDesign), "http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/") AS ?fabricBlockDesignName)
         ?requiredAmount
-        (STRAFTER(STR(?pdfURL), "http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/") AS ?pdfURLName)
-    WHERE {
+        ?pdf
+        WHERE {
         # Fetch recipes
         ?design rdf:type/rdfs:subClassOf* :SkirtDesign .
         ?recipe :isRecipeOf ?design .
-        
-        # Link recipe to requirements
         ?recipe :hasRequirement ?requirement .
         ?requirement :requiresFabricBlockDesign ?fabricBlockDesign .
         ?requirement :fabricBlockAmount ?requiredAmount .
-        
-        # Optional PDF URL
-        OPTIONAL {
-            ?recipe :hasPDF ?pdfProperty .
-            ?pdfProperty :URLtoPDF ?pdfURL .
-        }
+        ?recipe :documentation ?pdf .
     }
 
 
@@ -362,13 +355,13 @@ def fetch_skirt_recipes():
 
         data = [
             {
-                'recipe': item['recipeName']['value'].split("/")[-1] if 'recipeName' in item else None,  # Extract local name
-                'fabricBlockDesign': item['fabricBlockDesignName']['value'].split("/")[-1] if 'fabricBlockDesignName' in item else None,  # Extract local name
-                'requiredAmount': int(item['requiredAmount']['value']) if 'requiredAmount' in item else 0,  # Keep as integer
-                'pdfURL': item['pdfURLName']['value'] if 'pdfURLName' in item else None,  # Keep full URL
+                'recipe': f"<a href='{item['pdf']['value']}' target='_blank'>{item['recipeName']['value']}</a>" if 'pdf' in item and 'recipeName' in item else None,  # Make recipe clickable
+                'fabricBlockDesign': item['fabricBlockDesignName']['value'] if 'fabricBlockDesignName' in item else None,  # Extract fabric block design name
+                'requiredAmount': int(item['requiredAmount']['value']) if 'requiredAmount' in item else 0  # Convert required amount to integer
             }
             for item in bindings
         ]
+
 
         print(data)
         return data
