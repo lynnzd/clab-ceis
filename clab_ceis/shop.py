@@ -3,7 +3,7 @@ from dash.dependencies import Input, Output
 import ceis_data  # Assuming ceis_data.py is available and correctly implemented
 import plotly.graph_objects as go
 from SPARQLWrapper import SPARQLWrapper, JSON
-import pandas as pd
+
 
 
 
@@ -198,31 +198,8 @@ def dashboard_page():
                             ),
                              # Button to trigger SPARQL query
                             html.Button("Material Available", id="fetch-material-data"),
-                            # DataTable to display SPARQL results
-                            dash_table.DataTable(
-                                id="material-data-table",
-                                columns=[
-                                    {"name": "Recipe", "id": "recipe"},
-                                    {"name": "Fabric Block Design", "id": "fabricBlockDesign"},
-                                    {"name": "Required Amount", "id": "requiredAmount"},
-                                    {"name": "Available Amount", "id": "availableAmount"},
-                                    {"name": "Ready For Assembly", "id": "readyForAssembly"},
-                                ],
-                                style_table={
-                                    "overflowX": "auto",
-                                    "width": "100%",
-                                    "margin-top": "20px",
-                                },
-                                style_cell={
-                                    "textAlign": "left",
-                                    "padding": "5px",
-                                },
-                                style_header={
-                                    "backgroundColor": "rgb(230, 230, 230)",
-                                    "fontWeight": "bold",
-                                },
-                                page_size=5,
-                            ),
+                        
+                        html.Div(id="dynamic-tables-container", style={"margin-top": "30px"}),    
 
                         ]        
             ),
@@ -397,6 +374,7 @@ def fetch_top_recipes():
     except Exception as e:
         print(f"Error querying SPARQL endpoint: {e}")
         return []
+
 def fetch_location():
     query = """
     PREFIX : <http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/>
@@ -506,19 +484,122 @@ def update_top_table(n_clicks):
         return []
     
 @app.callback(
-    Output("material-data-table", "data"),  
-    Input("fetch-material-data", "n_clicks")  
+    Output("material-data-table", "children"),  # Dynamically update the existing Div
+    Input("fetch-material-data", "n_clicks")  # Triggered by button clicks
 )
 def update_material_table(n_clicks):
-    if n_clicks is None: 
-        return []  
     try:
-        # Fetch the material data
+        # Fetch the material data from the SPARQL query
         material_data = fetch_material()
-        return material_data 
+
+        # Group data by recipe
+        grouped_data = {}
+        for item in material_data:
+            recipe_name = item['recipe']
+            if recipe_name not in grouped_data:
+                grouped_data[recipe_name] = []
+            grouped_data[recipe_name].append(item)
+
+        # Generate a table for each recipe
+        tables = []
+        for recipe, rows in grouped_data.items():
+            table = dash_table.DataTable(
+                columns=[
+                    {"name": "Fabric Block Design", "id": "fabricBlockDesign"},
+                    {"name": "Required Amount", "id": "requiredAmount"},
+                    {"name": "Available Amount", "id": "availableAmount"},
+                    {"name": "Ready For Assembly", "id": "readyForAssembly"},
+                ],
+                data=rows,  # Data for the current recipe
+                style_table={
+                    "overflowX": "auto",
+                    "width": "100%",
+                    "margin-top": "20px",
+                },
+                style_cell={
+                    "textAlign": "left",
+                    "padding": "5px",
+                },
+                style_header={
+                    "backgroundColor": "rgb(230, 230, 230)",
+                    "fontWeight": "bold",
+                },
+                page_size=5,
+            )
+
+            # Add the recipe name as a header and the corresponding table
+            tables.append(html.Div([
+                html.H4(f"Recipe: {recipe}", style={"margin-top": "20px"}),  # Recipe title
+                table
+            ]))
+
+        # Return the dynamically generated tables
+        return html.Div(tables)
+
     except Exception as e:
         print(f"Error updating material table: {e}")
-        return [] 
+        return html.Div("Error fetching data.")  # Error message placeholder
+
+
+
+@app.callback(
+    Output("dynamic-tables-container", "children"),  # Dynamic output for multiple tables
+    Input("fetch-material-data", "n_clicks")  # Input from the button click
+)
+def update_material_tables(n_clicks):
+    if n_clicks is None:  # Handle case when button has not been clicked
+        return html.Div()  # Return a message
+
+    try:
+        # Fetch the material data from the SPARQL query
+        material_data = fetch_material()
+
+        # Group data by recipe name
+        grouped_data = {}
+        for item in material_data:
+            recipe_name = item['recipe']
+            if recipe_name not in grouped_data:
+                grouped_data[recipe_name] = []
+            grouped_data[recipe_name].append(item)
+
+        # Generate tables for each recipe
+        tables = []
+        for recipe, rows in grouped_data.items():
+            table = dash_table.DataTable(
+                columns=[
+                    {"name": "Fabric Block Design", "id": "fabricBlockDesign"},
+                    {"name": "Required Amount", "id": "requiredAmount"},
+                    {"name": "Available Amount", "id": "availableAmount"},
+                    {"name": "Ready For Assembly", "id": "readyForAssembly"},
+                ],
+                data=rows,
+                style_table={
+                    "overflowX": "auto",
+                    "width": "100%",
+                    "margin-top": "20px",
+                },
+                style_cell={
+                    "textAlign": "left",
+                    "padding": "5px",
+                },
+                style_header={
+                    "backgroundColor": "rgb(230, 230, 230)",
+                    "fontWeight": "bold",
+                },
+                page_size=5,
+            )
+
+            # Add a title for each recipe table
+            tables.append(html.Div([
+                html.H4(f"Recipe: {recipe}"),
+                table
+            ]))
+
+        return html.Div(tables)
+
+    except Exception as e:
+        print(f"Error updating material tables: {e}")
+        return html.Div("Error fetching data.")
         
 @app.callback(
     Output("location-data-table", "data"),  
