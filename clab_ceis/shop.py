@@ -404,33 +404,24 @@ def fetch_top_recipes():
     except Exception as e:
         print(f"Error querying SPARQL endpoint: {e}")
         return []
-
 def fetch_location():
     query = """
     PREFIX : <http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/>
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-    SELECT 
-        (STRAFTER(STR(?location), "http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/") AS ?locationName)
-        (STRAFTER(STR(?fabricBlockDesign), "http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/") AS ?fabricBlockDesignName)
-    WHERE 
-    { 
-        # Find all FabricBlockDesigns linked to requirements 
-        ?requirement :requiresFabricBlockDesign ?fabricBlockDesign . 
-        ?requirement :fabricBlockAmount ?requiredAmount . 
-        # Subquery to calculate availableAmount 
-        OPTIONAL{ 
-  
-    SELECT 
-        ?fabricBlockDesign (COUNT(?fabricBlock) AS ?availableAmount) 
-        WHERE { ?fabricBlock rdf:type :FabricBlock . 
-        ?fabricBlock :followsFabricBlockDesign ?fabricBlockDesign . 
-        }
-      GROUP BY ?fabricBlockDesign 
-      } 
-      # The subquery result (availableAmount) is used in the main WHERE clause 
-      }
+    SELECT ?location ?fabricBlockDesign (COUNT(?fabricBlock) AS ?countAtLocation)
+    WHERE {
+    # Retrieve fabric blocks and their associated designs and locations
+    ?fabricBlock rdf:type :FabricBlock .
+    ?fabricBlock :followsFabricBlockDesign ?fabricBlockDesign .
+    ?fabricBlock :hasLocation ?location .
+    
+    # Ensure the location is one of the specified ones
+    FILTER (?location IN (:location1, :location2, :location3))
+    }
+    GROUP BY ?location ?fabricBlockDesign
+    ORDER BY ?location ?fabricBlockDesign
     """
     client = SPARQLWrapper(SPARQL_ENDPOINT)
     client.setQuery(query)
@@ -443,8 +434,8 @@ def fetch_location():
         
         data = [
             {
-                'location': item['locationName']['value'] if 'locationName' in item else None,
-                'fabricBlockDesign': item['fabricBlockDesignName']['value'] if 'fabricBlockDesignName' in item else None,
+                'location': item['location']['value'].split("/")[-1] if 'location' in item else None,
+                'fabricBlockDesign': item['fabricBlockDesign']['value'].split("/")[-1] if 'fabricBlockDesign' in item else None,
                 'countAtLocation': int(item['countAtLocation']['value']) if 'countAtLocation' in item else 0
             }
             for item in bindings
