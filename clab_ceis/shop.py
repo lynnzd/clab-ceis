@@ -331,13 +331,23 @@ def fetch_skirt_recipes():
         bindings = results['results']['bindings']
 
         data = [
-            {
-                'recipe': f"<a href='{item['pdf']['value']}' target='_blank'>{item['recipeName']['value']}</a>" if 'pdf' in item and 'recipeName' in item else None,  # Make recipe clickable
-                'fabricBlockDesign': item['fabricBlockDesignName']['value'] if 'fabricBlockDesignName' in item else None,  # Extract fabric block design name
-                'requiredAmount': int(item['requiredAmount']['value']) if 'requiredAmount' in item else 0  # Convert required amount to integer
-            }
-            for item in bindings
-        ]
+                {
+                    # Make recipe name clickable with proper HTML formatting
+                    'recipe': (
+                        f"[{item['recipeName']['value']}]({item['pdf']['value']})"
+                        if 'pdf' in item and 'recipeName' in item else None
+                    ),
+
+                    # Extract fabric block design name
+                    'fabricBlockDesign': item['fabricBlockDesignName']['value'] 
+                                        if 'fabricBlockDesignName' in item else None,
+
+                    # Convert required amount to integer
+                    'requiredAmount': int(item['requiredAmount']['value']) 
+                                    if 'requiredAmount' in item else 0
+                }
+                for item in bindings
+            ]
 
 
         print(data)
