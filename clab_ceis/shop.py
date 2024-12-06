@@ -540,8 +540,6 @@ def update_material_table(n_clicks):
         print(f"Error updating material table: {e}")
         return html.Div("Error fetching data.")  # Error message placeholder
 
-
-
 @app.callback(
     Output("dynamic-tables-container", "children"),  # Dynamic output for multiple tables
     Input("fetch-material-data", "n_clicks")  # Input from the button click
