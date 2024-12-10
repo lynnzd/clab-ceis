@@ -362,25 +362,54 @@ def fetch_top_recipes():
     PREFIX : <http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/>
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
-    SELECT ?recipe
-    WHERE {
-      ?design rdf:type/rdfs:subClassOf* :TopDesign .
-      ?recipe :isRecipeOf ?design .
+    SELECT 
+        (STRAFTER(STR(?recipe), "http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/") AS ?recipeName)
+        (STRAFTER(STR(?fabricBlockDesign), "http://www.semanticweb.org/sophi/ontologies/2024/10/untitled-ontology-20/") AS ?fabricBlockDesignName)
+        ?requiredAmount
+        ?pdf
+        WHERE {
+        # Fetch recipes
+        ?design rdf:type/rdfs:subClassOf* :TopDesign .
+        ?recipe :isRecipeOf ?design .
+        ?recipe :hasRequirement ?requirement .
+        ?requirement :requiresFabricBlockDesign ?fabricBlockDesign .
+        ?requirement :fabricBlockAmount ?requiredAmount .
+        ?recipe :documentation ?pdf .
     }
+
+
     """
     client = SPARQLWrapper(SPARQL_ENDPOINT)
     client.setQuery(query)
     client.setReturnFormat(JSON)
     try:
         results = client.query().convert()
-        
-        # Extract the last part of the URI for each recipe
-        return [
-            {"recipe": result["recipe"]["value"].split("/")[-1]}  # Extracts only the last part
-            for result in results["results"]["bindings"]
-        ]
+        bindings = results['results']['bindings']
+
+        data = [
+                {
+                    # Make recipe name clickable with proper HTML formatting
+                    'recipe': (
+                        f"[{item['recipeName']['value']}]({item['pdf']['value']})"
+                        if 'pdf' in item and 'recipeName' in item else None
+                    ),
+
+                    # Extract fabric block design name
+                    'fabricBlockDesign': item['fabricBlockDesignName']['value'] 
+                                        if 'fabricBlockDesignName' in item else None,
+
+                    # Convert required amount to integer
+                    'requiredAmount': int(item['requiredAmount']['value']) 
+                                    if 'requiredAmount' in item else 0
+                }
+                for item in bindings
+            ]
+
+
+        print(data)
+        return data
+
     except Exception as e:
         print(f"Error querying SPARQL endpoint: {e}")
         return []
